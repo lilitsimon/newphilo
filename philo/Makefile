@@ -14,7 +14,7 @@ NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
 
-SOURCES = main.c utils.c init.c routine.c threads.c death_check.c
+SOURCES = main.c utils.c init.c simulation.c routine_actions.c death_check.c
 
 OBJECTS = $(SOURCES:.c=.o)
 
