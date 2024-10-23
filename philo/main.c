@@ -34,18 +34,61 @@ int	check_args(int argc, char **argv)
 	return (1);
 }
 
+void	cleanup(t_data *data, pthread_mutex_t *forks)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->philos[0].num_philos)
+	{
+		pthread_mutex_destroy(&forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&data->write_lock);
+	pthread_mutex_destroy(&data->dead_lock);
+	pthread_mutex_destroy(&data->meal_lock);
+	free(data->philos);
+}
+
+void	full_cleanup(char *str, t_data *data, pthread_mutex_t *forks)
+{
+	if (str)
+		printf("%s\n", str);
+	cleanup(data, forks);
+	free(forks);
+}
+
 int	main(int argc, char **argv)
 {
-	t_data			data;
-	t_philo			philos[200];
-	pthread_mutex_t	forks[200];
+	t_data data;
+	pthread_mutex_t *forks;
+	t_philo *philos;
+	int num_philos;
 
 	if (!check_args(argc, argv))
 		return (1);
-	data_init(&data, philos);
-	fork_init(forks, ft_atol(argv[1]));
-	philo_init(philos, &data, forks, argv);
-	thread_create(&data, forks);
+	num_philos = ft_atol(argv[1]);
+	forks = malloc(sizeof(pthread_mutex_t) * num_philos);
+	philos = malloc(sizeof(t_philo) * num_philos);
+	if (!forks || !philos)
+	{
+		if (forks)
+			free(forks);
+		if (philos)
+			free(philos);
+		return (printf("Error: Memory allocation failed\n"), 1);
+	}
+	data.philos = philos;
+	if (!data_init(&data, philos, forks, argv))
+	{
+		full_cleanup("Error: Initialization failed", &data, forks);
+		return (1);
+	}
+	if (thread_create(&data, forks) != 0)
+	{
+		full_cleanup("Error: Thread creation failed", &data, forks);
+		return (1);
+	}
 	full_cleanup(NULL, &data, forks);
 	return (0);
 }

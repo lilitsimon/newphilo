@@ -12,28 +12,48 @@
 
 #include "philo.h"
 
-void	data_init(t_data *data, t_philo *philos)
+int	data_init(t_data *data, t_philo *philos, pthread_mutex_t *forks,
+		char **argv)
 {
 	data->philos = philos;
 	data->dead_flag = 0;
-	pthread_mutex_init(&data->write_lock, NULL);
-	pthread_mutex_init(&data->dead_lock, NULL);
-	pthread_mutex_init(&data->meal_lock, NULL);
+	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
+		return (0);
+	if (pthread_mutex_init(&data->dead_lock, NULL) != 0)
+	{
+		pthread_mutex_destroy(&data->write_lock);
+		return (0);
+	}
+	if (pthread_mutex_init(&data->meal_lock, NULL) != 0)
+	{
+		pthread_mutex_destroy(&data->write_lock);
+		pthread_mutex_destroy(&data->dead_lock);
+		return (0);
+	}
+	if (!fork_init(forks, ft_atol(argv[1])))
+		return (0);
+	return (philo_init(philos, data, forks, argv));
 }
 
-void	fork_init(pthread_mutex_t *forks, int philo_num)
+int	fork_init(pthread_mutex_t *forks, int philo_num)
 {
 	int	i;
 
 	i = 0;
 	while (i < philo_num)
 	{
-		pthread_mutex_init(&forks[i], NULL);
+		if (pthread_mutex_init(&forks[i], NULL) != 0)
+		{
+			while (--i >= 0)
+				pthread_mutex_destroy(&forks[i]);
+			return (0);
+		}
 		i++;
 	}
+	return (1);
 }
 
-void	philo_init(t_philo *philos, t_data *data, pthread_mutex_t *forks,
+int	philo_init(t_philo *philos, t_data *data, pthread_mutex_t *forks,
 		char **argv)
 {
 	int	i;
@@ -44,7 +64,8 @@ void	philo_init(t_philo *philos, t_data *data, pthread_mutex_t *forks,
 	while (i < num_philos)
 	{
 		philos[i].id = i + 1;
-		input_init(&philos[i], argv);
+		if (!input_init(&philos[i], argv))
+			return (0);
 		philos[i].last_meal = get_time();
 		philos[i].start_time = get_time();
 		philos[i].eating = 0;
@@ -54,15 +75,13 @@ void	philo_init(t_philo *philos, t_data *data, pthread_mutex_t *forks,
 		philos[i].meal_lock = &data->meal_lock;
 		philos[i].dead = &data->dead_flag;
 		philos[i].left_fork = &forks[i];
-		if (i == 0)
-			philos[i].right_fork = &forks[philos[i].num_philos - 1];
-		else
-			philos[i].right_fork = &forks[i - 1];
+		philos[i].right_fork = &forks[(i + 1) % num_philos];
 		i++;
 	}
+	return (1);
 }
 
-void	input_init(t_philo *philo, char **argv)
+int	input_init(t_philo *philo, char **argv)
 {
 	philo->time_to_die = ft_atol(argv[2]);
 	philo->time_to_eat = ft_atol(argv[3]);
@@ -72,4 +91,5 @@ void	input_init(t_philo *philo, char **argv)
 		philo->must_eat_count = ft_atol(argv[5]);
 	else
 		philo->must_eat_count = -1;
+	return (1);
 }

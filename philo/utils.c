@@ -46,25 +46,18 @@ long	ft_atol(char *str)
 	}
 	return (result * sign);
 }
-
-void	full_cleanup(char *str, t_data *data, pthread_mutex_t *forks)
+int	is_number(char *str)
 {
 	int	i;
 
 	i = 0;
-	if (str)
+	while (str[i])
 	{
-		write(2, str, ft_strlen(str));
-		write(2, "\n", 1);
-	}
-	pthread_mutex_destroy(&data->write_lock);
-	pthread_mutex_destroy(&data->meal_lock);
-	pthread_mutex_destroy(&data->dead_lock);
-	while (i < data->philos[0].num_philos)
-	{
-		pthread_mutex_destroy(&forks[i]);
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
 		i++;
 	}
+	return (1);
 }
 
 int	ft_usleep(long long milliseconds)
@@ -84,18 +77,4 @@ long long	get_time(void)
 	if (gettimeofday(&time, NULL) == -1)
 		write(2, "gettimeofday() error\n", 22);
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
-}
-
-int	is_number(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		i++;
-	}
-	return (1);
 }
