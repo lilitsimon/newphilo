@@ -12,27 +12,10 @@
 
 #include "philo.h"
 
-void	philo_think(t_philo *philo)
-{
-	print_status("is philo_thinking", philo, philo->id);
-}
-
-void	philo_sleep(t_philo *philo)
-{
-	print_status("is sleeping", philo, philo->id);
-	ft_usleep(philo->time_to_sleep);
-}
-
 void	philo_eat(t_philo *philo)
 {
 	pthread_mutex_lock(philo->right_fork);
 	print_status("has taken a fork", philo, philo->id);
-	if (philo->num_philos == 1)
-	{
-		ft_usleep(philo->time_to_die);
-		pthread_mutex_unlock(philo->right_fork);
-		return ;
-	}
 	pthread_mutex_lock(philo->left_fork);
 	print_status("has taken a fork", philo, philo->id);
 	philo->eating = 1;
@@ -45,4 +28,15 @@ void	philo_eat(t_philo *philo)
 	philo->eating = 0;
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
+}
+
+void	philo_think(t_philo *philo)
+{
+	print_status("is philo_thinking", philo, philo->id);
+}
+
+void	philo_sleep(t_philo *philo)
+{
+	print_status("is sleeping", philo, philo->id);
+	ft_usleep(philo->time_to_sleep);
 }

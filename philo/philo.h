@@ -75,7 +75,7 @@ void				philo_eat(t_philo *philo);
 void				philo_sleep(t_philo *philo);
 void				philo_think(t_philo *philo);
 int					philo_die_loop(t_philo *philo);
-int					check_all_ate_enough(t_philo *philos);
+int					check_all_ate(t_philo *philos);
 int					check_philo_death(t_philo *philos);
 
 #endif

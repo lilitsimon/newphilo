@@ -32,7 +32,10 @@ int	philo_die_loop(t_philo *philo)
 {
 	pthread_mutex_lock(philo->dead_lock);
 	if (*philo->dead == 1)
-		return (pthread_mutex_unlock(philo->dead_lock), 1);
+	{
+		pthread_mutex_unlock(philo->dead_lock);
+		return (1);
+	}
 	pthread_mutex_unlock(philo->dead_lock);
 	return (0);
 }
@@ -43,7 +46,7 @@ void	*monitor_routine(void *ptr)
 
 	philos = (t_philo *)ptr;
 	while (1)
-		if (check_philo_death(philos) == 1 || check_all_ate_enough(philos) == 1)
+		if (check_philo_death(philos) == 1 || check_all_ate(philos) == 1)
 			break ;
 	return (ptr);
 }
@@ -78,17 +81,6 @@ int	start_simulation(t_data *data)
 		i++;
 	}
 	return (0);
-}
-
-void	print_status(char *str, t_philo *philo, int id)
-{
-	long long	time;
-
-	pthread_mutex_lock(philo->write_lock);
-	time = get_time() - philo->start_time;
-	if (!philo_die_loop(philo))
-		printf("%lld %d %s\n", time, id, str);
-	pthread_mutex_unlock(philo->write_lock);
 }
 
 void	one_philo(t_data *data)
