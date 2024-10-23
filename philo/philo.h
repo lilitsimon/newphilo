@@ -56,13 +56,13 @@ void				full_cleanup(char *str, t_data *data,
 long				ft_atol(char *str);
 int					is_number(char *str);
 int					ft_strlen(char *str);
-void				init_data(t_data *data, t_philo *philos);
-void				init_forks(pthread_mutex_t *forks, int philo_num);
-void				init_philos(t_philo *philos, t_data *data,
+void				data_init(t_data *data, t_philo *philos);
+void				fork_init(pthread_mutex_t *forks, int philo_num);
+void				philo_init(t_philo *philos, t_data *data,
 						pthread_mutex_t *forks, char **argv);
 long long			get_time(void);
 int					ft_usleep(long long microseconds);
-void				init_input(t_philo *philo, char **argv);
+void				input_init(t_philo *philo, char **argv);
 int					thread_create(t_data *data, pthread_mutex_t *forks);
 void				*monitor_routine(void *pointer);
 void				*philo_routine(void *pointer);

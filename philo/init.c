@@ -12,32 +12,43 @@
 
 #include "philo.h"
 
-void	init_input(t_philo *philo, char **argv)
+void	data_init(t_data *data, t_philo *philos)
 {
-	philo->time_to_die = ft_atol(argv[2]);
-	philo->time_to_eat = ft_atol(argv[3]);
-	philo->time_to_sleep = ft_atol(argv[4]);
-	philo->num_philos = ft_atol(argv[1]);
-	if (argv[5])
-		philo->must_eat_count = ft_atol(argv[5]);
-	else
-		philo->must_eat_count = -1;
+	data->philos = philos;
+	data->dead_flag = 0;
+	pthread_mutex_init(&data->write_lock, NULL);
+	pthread_mutex_init(&data->dead_lock, NULL);
+	pthread_mutex_init(&data->meal_lock, NULL);
 }
 
-void	init_philos(t_philo *philos, t_data *data, pthread_mutex_t *forks,
-		char **argv)
+void	fork_init(pthread_mutex_t *forks, int philo_num)
 {
 	int	i;
 
 	i = 0;
-	while (i < ft_atol(argv[1]))
+	while (i < philo_num)
+	{
+		pthread_mutex_init(&forks[i], NULL);
+		i++;
+	}
+}
+
+void	philo_init(t_philo *philos, t_data *data, pthread_mutex_t *forks,
+		char **argv)
+{
+	int	i;
+	int	num_philos;
+
+	num_philos = ft_atol(argv[1]);
+	i = 0;
+	while (i < num_philos)
 	{
 		philos[i].id = i + 1;
+		input_init(&philos[i], argv);
+		philos[i].last_meal = get_time();
+		philos[i].start_time = get_time();
 		philos[i].eating = 0;
 		philos[i].meals_eaten = 0;
-		init_input(&philos[i], argv);
-		philos[i].start_time = get_time();
-		philos[i].last_meal = get_time();
 		philos[i].write_lock = &data->write_lock;
 		philos[i].dead_lock = &data->dead_lock;
 		philos[i].meal_lock = &data->meal_lock;
@@ -51,23 +62,14 @@ void	init_philos(t_philo *philos, t_data *data, pthread_mutex_t *forks,
 	}
 }
 
-void	init_forks(pthread_mutex_t *forks, int philo_num)
+void	input_init(t_philo *philo, char **argv)
 {
-	int	i;
-
-	i = 0;
-	while (i < philo_num)
-	{
-		pthread_mutex_init(&forks[i], NULL);
-		i++;
-	}
-}
-
-void	init_data(t_data *data, t_philo *philos)
-{
-	data->dead_flag = 0;
-	data->philos = philos;
-	pthread_mutex_init(&data->write_lock, NULL);
-	pthread_mutex_init(&data->dead_lock, NULL);
-	pthread_mutex_init(&data->meal_lock, NULL);
+	philo->time_to_die = ft_atol(argv[2]);
+	philo->time_to_eat = ft_atol(argv[3]);
+	philo->time_to_sleep = ft_atol(argv[4]);
+	philo->num_philos = ft_atol(argv[1]);
+	if (argv[5])
+		philo->must_eat_count = ft_atol(argv[5]);
+	else
+		philo->must_eat_count = -1;
 }

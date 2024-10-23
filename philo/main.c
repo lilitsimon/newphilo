@@ -34,39 +34,18 @@ int	check_args(int argc, char **argv)
 	return (1);
 }
 
-
 int	main(int argc, char **argv)
 {
-	t_data		data;
+	t_data			data;
 	t_philo			philos[200];
 	pthread_mutex_t	forks[200];
 
 	if (!check_args(argc, argv))
 		return (1);
-	init_data(&data, philos);
-	init_forks(forks, ft_atol(argv[1]));
-	init_philos(philos, &data, forks, argv);
+	data_init(&data, philos);
+	fork_init(forks, ft_atol(argv[1]));
+	philo_init(philos, &data, forks, argv);
 	thread_create(&data, forks);
 	full_cleanup(NULL, &data, forks);
 	return (0);
 }
-
-/*
-	if (!init_data(&data, philos, forks, argv))
-	{
-		cleanup(&data, forks);
-		free(forks);
-		return (1);
-	}
-	if (start_simulation(&data) != 0)
-	{
-		cleanup(&data, forks);
-		free(forks);
-		return (1);
-	}
-	cleanup(&data, forks);
-	free(forks);
-	return (0);
-}
-
-*/
