@@ -64,9 +64,11 @@ int					philo_init(t_philo *philos, t_data *data,
 int					input_init(t_philo *philo, char **argv);
 long long			get_time(void);
 int					ft_usleep(long long microseconds);
-int					thread_create(t_data *data, pthread_mutex_t *forks);
-void				*monitor_routine(void *pointer);
-void				*philo_routine(void *pointer);
+int					start_simulation(t_data *data);
+void				one_philo(t_data *data);
+void				*monitor_routine(void *ptr);
+void				*philo_routine(void *ptr);
+int					philo_die_loop(t_philo *philo);
 int					philo_dead(t_philo *philo, long long time_to_die);
 void				print_status(char *str, t_philo *philo, int id);
 void				philo_eat(t_philo *philo);
@@ -74,6 +76,6 @@ void				philo_sleep(t_philo *philo);
 void				philo_think(t_philo *philo);
 int					philo_die_loop(t_philo *philo);
 int					check_all_ate_enough(t_philo *philos);
-int					philo_death_check(t_philo *philos);
+int					check_philo_death(t_philo *philos);
 
 #endif

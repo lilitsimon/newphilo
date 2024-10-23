@@ -76,7 +76,6 @@ int	main(int argc, char **argv)
 			free(forks);
 		if (philos)
 			free(philos);
-		return (printf("Error: Memory allocation failed\n"), 1);
 	}
 	data.philos = philos;
 	if (!data_init(&data, philos, forks, argv))
@@ -84,7 +83,7 @@ int	main(int argc, char **argv)
 		full_cleanup("Error: Initialization failed", &data, forks);
 		return (1);
 	}
-	if (thread_create(&data, forks) != 0)
+	if (start_simulation(&data) != 0)
 	{
 		full_cleanup("Error: Thread creation failed", &data, forks);
 		return (1);

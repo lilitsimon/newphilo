@@ -12,16 +12,7 @@
 
 #include "philo.h"
 
-void	print_status(char *str, t_philo *philo, int id)
-{
-	long long	time;
 
-	pthread_mutex_lock(philo->write_lock);
-	time = get_time() - philo->start_time;
-	if (!philo_die_loop(philo))
-		printf("%lld %d %s\n", time, id, str);
-	pthread_mutex_unlock(philo->write_lock);
-}
 
 int	philo_dead(t_philo *philo, long long time_to_die)
 {
@@ -32,7 +23,7 @@ int	philo_dead(t_philo *philo, long long time_to_die)
 	return (0);
 }
 
-int	philo_death_check(t_philo *philos)
+int	check_philo_death(t_philo *philos)
 {
 	int	i;
 
@@ -79,13 +70,4 @@ int	check_all_ate_enough(t_philo *philos)
 	return (0);
 }
 
-void	*monitor_routine(void *pointer)
-{
-	t_philo	*philos;
 
-	philos = (t_philo *)pointer;
-	while (1)
-		if (philo_death_check(philos) == 1 || check_all_ate_enough(philos) == 1)
-			break ;
-	return (pointer);
-}
