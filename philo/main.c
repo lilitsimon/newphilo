@@ -34,6 +34,19 @@ int	check_args(int argc, char **argv)
 	return (1);
 }
 
+int	check_allocs(pthread_mutex_t *forks, t_philo *philos)
+{
+	if (!forks || !philos)
+	{
+		if (forks)
+			free(forks);
+		if (philos)
+			free(philos);
+		printf("Error: Memory allocation failed\n");
+		return (0);
+	}
+	return (1);
+}
 void	cleanup(t_data *data, pthread_mutex_t *forks)
 {
 	int	i;
@@ -58,25 +71,21 @@ void	full_cleanup(char *str, t_data *data, pthread_mutex_t *forks)
 	free(forks);
 }
 
+
 int	main(int argc, char **argv)
 {
-	t_data data;
-	pthread_mutex_t *forks;
-	t_philo *philos;
-	int num_philos;
+	t_data			data;
+	pthread_mutex_t	*forks;
+	t_philo			*philos;
+	int				num_philos;
 
 	if (!check_args(argc, argv))
 		return (1);
 	num_philos = ft_atol(argv[1]);
 	forks = malloc(sizeof(pthread_mutex_t) * num_philos);
 	philos = malloc(sizeof(t_philo) * num_philos);
-	if (!forks || !philos)
-	{
-		if (forks)
-			free(forks);
-		if (philos)
-			free(philos);
-	}
+	if (!check_allocs(forks, philos))
+		return (1);
 	data.philos = philos;
 	if (!data_init(&data, philos, forks, argv))
 	{
