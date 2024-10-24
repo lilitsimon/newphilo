@@ -47,7 +47,6 @@ int	check_allocs(pthread_mutex_t *forks, t_philo *philos)
 	}
 	return (1);
 }
-
 void	cleanup(t_data *data, pthread_mutex_t *forks)
 {
 	int	i;

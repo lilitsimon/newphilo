@@ -66,3 +66,16 @@ long long	get_time(void)
 		write(2, "gettimeofday() error\n", 22);
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
+
+void	one_philo(t_data *data)
+{
+	t_philo	*philo;
+
+	philo = &data->philos[0];
+	print_status("has taken a fork", philo, philo->id);
+	ft_usleep(philo->time_to_die);
+	print_status("died", philo, philo->id);
+	pthread_mutex_lock(philo->dead_lock);
+	*philo->dead = 1;
+	pthread_mutex_unlock(philo->dead_lock);
+}

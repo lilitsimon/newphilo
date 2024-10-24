@@ -71,6 +71,7 @@ int					input_init(t_philo *philo, char **argv);
 
 //**SIMULATION**//
 int					start_simulation(t_data *data);
+int 				monitor_and_join_threads(t_data *data);
 void				one_philo(t_data *data);
 void				*monitor_routine(void *ptr);
 void				*philo_routine(void *ptr);
