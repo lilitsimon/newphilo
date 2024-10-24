@@ -6,7 +6,7 @@
 /*   By: lisimony <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 15:09:56 by lisimony          #+#    #+#             */
-/*   Updated: 2024/10/15 15:09:58 by lisimony         ###   ########.fr       */
+/*   Updated: 2024/10/24 13:43:23 by lisimony         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ long				ft_atol(char *str);
 int					is_number(char *str);
 long long			get_time(void);
 int					ft_usleep(long long mseconds);
-
 //**INIT**//
 int					data_init(t_data *data, t_philo *philos,
 						pthread_mutex_t *forks, char **argv);
@@ -68,13 +67,13 @@ int					fork_init(pthread_mutex_t *forks, int philo_num);
 int					philo_init(t_philo *philos, t_data *data,
 						pthread_mutex_t *forks, char **argv);
 int					input_init(t_philo *philo, char **argv);
-
 //**SIMULATION**//
 int					start_simulation(t_data *data);
-int 				monitor_and_join_threads(t_data *data);
+int					monitor_and_join_threads(t_data *data);
 void				one_philo(t_data *data);
 void				*monitor_routine(void *ptr);
 void				*philo_routine(void *ptr);
+int					check_philo_death(t_philo *philos);
 int					philo_die_loop(t_philo *philo);
 int					philo_dead(t_philo *philo, long long time_to_die);
 void				print_status(char *str, t_philo *philo, int id);
@@ -83,6 +82,5 @@ void				philo_sleep(t_philo *philo);
 void				philo_think(t_philo *philo);
 int					philo_die_loop(t_philo *philo);
 int					check_all_ate(t_philo *philos);
-int					check_philo_death(t_philo *philos);
 
 #endif

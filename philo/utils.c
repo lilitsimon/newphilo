@@ -34,6 +34,7 @@ long	ft_atol(char *str)
 	}
 	return (result * sign);
 }
+
 int	is_number(char *str)
 {
 	int	i;

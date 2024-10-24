@@ -72,7 +72,6 @@ void	full_cleanup(char *str, t_data *data, pthread_mutex_t *forks)
 	free(forks);
 }
 
-
 int	main(int argc, char **argv)
 {
 	t_data			data;
